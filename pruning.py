@@ -57,7 +57,7 @@ def pruning(model, ratio, device, test_loader, step):
                        'n_params': param_list,
                        'MACs': mmac_list,
                        'inference time(μs)': inference_time_list},
-                      index = ['Base'] + ['step ' + str(i) for i in range(len(acc_list))])
+                      index = ['Base'] + ['step ' + str(i+1) for i in range(len(acc_list)-1)])
 
     return model, acc_list, param_list, mmac_list, inference_time_list, df
 

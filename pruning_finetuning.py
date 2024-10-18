@@ -9,7 +9,7 @@ from test import test
 import pandas as pd
 
 
-def pruning_finetuning(model, ratio, device, test_loader):
+def pruning_finetuning(model, ratio, device, test_loader, step, lr):
     acc_list = []
     param_list = []
     mmac_list = []
@@ -27,7 +27,7 @@ def pruning_finetuning(model, ratio, device, test_loader):
             ignored_layers.append(m)
 
 
-    iterative_steps = 5
+    iterative_steps = step
     pruner = tp.pruner.MagnitudePruner(
         model,
         example_inputs,
@@ -53,7 +53,7 @@ def pruning_finetuning(model, ratio, device, test_loader):
 
 
         # fine-tuning after pruning
-        model = fine_tuning(model, device, test_loader)
+        model = fine_tuning(model, device, test_loader, lr)
 
         acc, inference_time = test(model, device, test_loader)
         macs, nparams = tp.utils.count_ops_and_params(model, example_inputs)
@@ -69,6 +69,6 @@ def pruning_finetuning(model, ratio, device, test_loader):
                        'n_params': param_list,
                        'MACs': mmac_list,
                        'inference time(μs)': inference_time_list},
-                      index=['Base'] + ['step ' + str(i) for i in range(1, 6)])
+                      index=['Base'] + ['step ' + str(i+1) for i in range(len(acc_list)-1)])
 
     return model, acc_list, param_list, mmac_list, inference_time_list, df

@@ -1,9 +1,9 @@
 import torch.nn as nn
 import torch.optim as optim
 
-def fine_tuning(model, device, data):
+def fine_tuning(model, device, data, lr):
     epochs = 5
-    learning_rate = 1e-4 # smaller than 1e-3(original training lr)
+    learning_rate = lr # smaller than 1e-3(original training lr)
     total_samples = 0
 
     criterion = nn.CrossEntropyLoss()
